@@ -42,22 +42,23 @@
     async function fetchProducts() {
         const res = await fetch(
             // `localhost:400/api/products?keyword=${value}&pageNumber=${currentPage}`,
-            `http://localhost:4000/api/products`,
+            `https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products`,
         );
         const data = await res.json();
         Products = data.products;
     }
     async function searchProduct() {
         const res = await fetch(
-            `http://localhost:4000/api/products?keyword=${value}`,
+            `https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products?keyword=${value}`,
         );
         const data = await res.json();
         Products = data.products;
     }
     async function fetchProductsById(id) {
-        const res = await fetch(`http://localhost:4000/api/products/get/${id}`);
+        const res = await fetch(`https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products/get/${id}`);
         const product = await res.json();
         selectedProduct = product; // Guarda el producto seleccionado
+        toggle(Update);
     }
 
     $: if (value.length < 2) {
@@ -153,7 +154,7 @@
                             <Button
                                 size="sm"
                                 class="gap-2 px-3"
-                                on:click={() => fetchProductsById(product._id).then(toggle(Update))}
+                                on:click={() => fetchProductsById(product._id)}
                             >
                                 <EditOutline size="sm" /> Update
                             </Button>
