@@ -16,7 +16,7 @@
     let updateProducts = { ...selectedProduct};
 
 	async function updateProduct() {
-		const response = await fetch(`http://localhost:4000/api/products/${product._id}`, {
+		const response = await fetch(`https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products/${product._id}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",

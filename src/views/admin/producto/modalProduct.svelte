@@ -31,7 +31,7 @@
 			countInStock,
 		};
 
-		const response = await fetch("http://localhost:4000/api/products/register", {
+		const response = await fetch("https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products/register", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

@@ -38,7 +38,19 @@
     };
     let value = "";
     let Products = [];
-    const handleSearch = (e) => (value = e.target.value);
+    let searchTimeout;
+
+    const handleSearch = (e) => {
+    clearTimeout(searchTimeout);
+    value = e.target.value;
+    searchTimeout = setTimeout(() => {
+        if (value.length < 2) {
+            fetchProducts();
+        } else if (value.length > 2) {
+            searchProduct();
+        }
+    }, 300);  // 300 ms de espera antes de ejecutar la búsqueda
+};
     async function fetchProducts() {
         const res = await fetch(
             // `localhost:400/api/products?keyword=${value}&pageNumber=${currentPage}`,
