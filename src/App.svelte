@@ -7,7 +7,9 @@
 
   export let url = "";
 </script>
-
-<Router url="{url}">
-  <Route path="/product/" component = "{ProductDetail}" />
-</Router>
+<main>
+  <a href="/product">Productos</a>
+  <Router url="{url}">
+    <Route path="/product/" component = "{ProductDetail}" />
+  </Router>
+</main>
