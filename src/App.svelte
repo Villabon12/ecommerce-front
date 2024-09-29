@@ -8,8 +8,8 @@
   export let url = "";
 </script>
 <main>
-  <a href="/product/">Productos</a>
+  <a href="/admin/product/">Productos</a>
   <Router url={url}>
-    <Route path="/product/" component = {ProductDetail} />
+    <Route path="/admin/product/" component = {ProductDetail} />
   </Router>
 </main>
