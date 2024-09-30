@@ -21,6 +21,7 @@
     import Delete from "./modalDelete.svelte";
     import Product from "./modalProduct.svelte";
     import Update from "./modalUpdate.svelte";
+    import { productsStore, fetchProducts } from './stores';
 
     let hidden: boolean = true; // modal control
     let drawerComponent: ComponentType = Product; // drawer component
@@ -38,6 +39,9 @@
     };
     let value = "";
     let Products = [];
+    $: Products = $productsStore;
+
+    fetchProducts();
     let searchTimeout;
 
     const handleSearch = (e) => {
@@ -51,14 +55,6 @@
         }
     }, 300);  // 300 ms de espera antes de ejecutar la búsqueda
 };
-    async function fetchProducts() {
-        const res = await fetch(
-            // `localhost:400/api/products?keyword=${value}&pageNumber=${currentPage}`,
-            `https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products`,
-        );
-        const data = await res.json();
-        Products = data.products;
-    }
     async function searchProduct() {
         const res = await fetch(
             `https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products?keyword=${value}`,
@@ -66,19 +62,8 @@
         const data = await res.json();
         Products = data.products;
     }
-    async function fetchProductsById(id) {
-        const res = await fetch(`https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products/get/${id}`);
-        const product = await res.json();
-        selectedProduct = product; // Guarda el producto seleccionado
-        toggle(Update);
-    }
 
-    $: if (value.length < 2) {
-        fetchProducts();
-    }
-    $: if (value.length > 2) {
-        searchProduct();
-    }
+
 </script>
 
 <main class="relative h-full w-full overflow-y-auto bg-white dark:bg-gray-800">
@@ -166,7 +151,10 @@
                             <Button
                                 size="sm"
                                 class="gap-2 px-3"
-                                on:click={() => fetchProductsById(product._id)}
+                                on:click={() => {
+                                    selectedProduct = product;
+                                    toggle(Update);
+                                }}
                             >
                                 <EditOutline size="sm" /> Update
                             </Button>

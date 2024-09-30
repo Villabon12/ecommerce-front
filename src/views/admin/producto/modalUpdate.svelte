@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import {
 		Button,
 		CloseButton,
@@ -15,28 +17,43 @@
 
     let updateProducts = { ...selectedProduct};
 
-	async function updateProduct() {
-		const response = await fetch(`https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products/${product._id}`, {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(updateProducts),
-		});
+    $: if (selectedProduct) {
+        updateProducts = { ...selectedProduct };
+    }
 
-		if (response.ok) {
-			const result = await response.json();
-			alert("Producted update successfully");
-			hidden = true;
-		} else {
-			const err = await response.json();
-			alert("failed to update product " + err.message);
-		}
-	}
+    onMount(() => {
+        if (selectedProduct) {
+            updateProducts = { ...selectedProduct };
+        }
+    });
+
+    async function updateProduct() {
+        if (!updateProducts._id) {
+            alert("No product selected for update");
+            return;
+        }
+
+        const response = await fetch(`https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products/${updateProducts._id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updateProducts),
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            alert("Product updated successfully");
+            hidden = true;
+        } else {
+            const err = await response.json();
+            alert("Failed to update product: " + err.message);
+        }
+    }
 </script>
 
 <Heading tag="h5" class="mb-6 text-sm font-semibold uppercase"
-	>Update product {updateProduct._id}</Heading
+	>Update product {updateProducts._id}</Heading
 >
 <CloseButton
 	on:click={() => (hidden = true)}

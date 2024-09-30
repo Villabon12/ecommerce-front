@@ -10,6 +10,7 @@
 	} from "flowbite-svelte";
 	  // @ts-ignore
 	import { CloseOutline } from "flowbite-svelte-icons";
+	import { fetchProducts } from "./stores";
 	export let hidden: boolean = true; // modal control
 
 	let name = "";
@@ -40,7 +41,7 @@
 		});
 
 		if (response.ok) {
-			const result = await response.json();
+			fetchProducts();
 			alert("Producted added successfully");
 			hidden = true;
 		} else {
