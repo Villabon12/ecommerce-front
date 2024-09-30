@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount } from "svelte";
 
 	import {
 		Button,
@@ -10,50 +10,48 @@
 		Select,
 		Textarea,
 	} from "flowbite-svelte";
-	  // @ts-ignore
+	// @ts-ignore
 	import { CloseOutline } from "flowbite-svelte-icons";
 	export let hidden: boolean = true; // modal control
-    export let selectedProduct;
+	export let selectedProduct = {};
 
-    let updateProducts = { ...selectedProduct};
+    let updateProducts = { ...selectedProduct };
 
-    $: if (selectedProduct) {
+    $: if (Object.keys(selectedProduct).length > 0) {
         updateProducts = { ...selectedProduct };
     }
 
     onMount(() => {
-        if (selectedProduct) {
+        if (Object.keys(selectedProduct).length > 0) {
             updateProducts = { ...selectedProduct };
         }
     });
 
-    async function updateProduct() {
-        if (!updateProducts._id) {
-            alert("No product selected for update");
-            return;
-        }
+	async function updateProduct() {
+		const response = await fetch(
+			`https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products/${updateProducts._id}`,
+			{
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(updateProducts),
+			},
+		);
 
-        const response = await fetch(`https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products/${updateProducts._id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updateProducts),
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            alert("Product updated successfully");
-            hidden = true;
-        } else {
-            const err = await response.json();
-            alert("Failed to update product: " + err.message);
-        }
-    }
+		if (response.ok) {
+			const result = await response.json();
+			alert("Product updated successfully");
+			hidden = true;
+		} else {
+			const err = await response.json();
+			alert("Failed to update product: " + err.message);
+		}
+	}
 </script>
 
 <Heading tag="h5" class="mb-6 text-sm font-semibold uppercase"
-	>Update product {updateProducts._id}</Heading
+	>Update product</Heading
 >
 <CloseButton
 	on:click={() => (hidden = true)}
@@ -85,6 +83,7 @@
 				required
 			/>
 		</Label>
+
 		<Label class="space-y-2">
 			<span>Category</span>
 			<Select
@@ -93,47 +92,51 @@
 			>
 				<option selected>Select category</option>
 				<option value="Home">Home</option>
-				<option value="Tecnology">Tecnology</option>
+				<option value="Technology">Technology</option>
 				<option value="Clothes">Clothes</option>
 				<option value="Other">Other</option>
 			</Select>
 		</Label>
+
 		<Label class="space-y-2">
-			<span>image</span>
+			<span>Image</span>
 			<Input
 				type="url"
-				name="price"
+				name="image"
 				class="border font-normal outline-none"
 				placeholder="https://"
 				bind:value={updateProducts.image}
 				required
 			/>
 		</Label>
+
 		<Label class="space-y-2">
 			<span>Description</span>
 			<Textarea
 				rows="4"
-				placeholder="Enter event description here"
+				placeholder="Enter product description"
 				bind:value={updateProducts.description}
 				class="border-gray-300 font-normal outline-none"
 			></Textarea>
 		</Label>
+
 		<Label class="space-y-2">
 			<span>Brand</span>
 			<Input
 				type="text"
-				name="title"
+				name="brand"
 				class="border font-normal outline-none"
 				placeholder="Apple"
 				bind:value={updateProducts.brand}
 				required
 			/>
 		</Label>
+
 		<Label class="space-y-2">
 			<span>Stock</span>
 			<Input
 				type="number"
-				name="price"
+				name="stock"
 				class="border font-normal outline-none"
 				placeholder="Enter stock quantity"
 				bind:value={updateProducts.countInStock}

@@ -21,13 +21,14 @@
     import Delete from "./modalDelete.svelte";
     import Product from "./modalProduct.svelte";
     import Update from "./modalUpdate.svelte";
-    import { productsStore, fetchProducts } from './stores';
+    import { productsStore, fetchProducts } from "./stores";
 
     let hidden: boolean = true; // modal control
     let drawerComponent: ComponentType = Product; // drawer component
     let selectedProduct = {}; // Product data to update in modal
 
-    const toggle = (component: ComponentType) => {
+    const toggle = (component: ComponentType, product = {}) => {
+        selectedProduct = product;  // Aquí pasas los datos al selectedProduct
         drawerComponent = component;
         hidden = false;
     };
@@ -45,16 +46,16 @@
     let searchTimeout;
 
     const handleSearch = (e) => {
-    clearTimeout(searchTimeout);
-    value = e.target.value;
-    searchTimeout = setTimeout(() => {
-        if (value.length < 2) {
-            fetchProducts();
-        } else if (value.length > 2) {
-            searchProduct();
-        }
-    }, 300);  // 300 ms de espera antes de ejecutar la búsqueda
-};
+        clearTimeout(searchTimeout);
+        value = e.target.value;
+        searchTimeout = setTimeout(() => {
+            if (value.length < 2) {
+                fetchProducts();
+            } else if (value.length > 2) {
+                searchProduct();
+            }
+        }, 300); // 300 ms de espera antes de ejecutar la búsqueda
+    };
     async function searchProduct() {
         const res = await fetch(
             `https://accused-beverlie-freelancer-indepent-c689f673.koyeb.app/api/products?keyword=${value}`,
@@ -63,7 +64,14 @@
         Products = data.products;
     }
 
-
+    async function openUpdateModal(product) {
+        selectedProduct = product;
+        toggle(Update, product);
+    }
+    async function openDeleteModal(product) {
+        selectedProduct = product;
+        toggle(Delete, product);
+    }
 </script>
 
 <main class="relative h-full w-full overflow-y-auto bg-white dark:bg-gray-800">
@@ -151,10 +159,7 @@
                             <Button
                                 size="sm"
                                 class="gap-2 px-3"
-                                on:click={() => {
-                                    selectedProduct = product;
-                                    toggle(Update);
-                                }}
+                                on:click={() => openUpdateModal(product)}
                             >
                                 <EditOutline size="sm" /> Update
                             </Button>
@@ -162,7 +167,7 @@
                                 color="red"
                                 size="sm"
                                 class="gap-2 px-3"
-                                on:click={() => toggle(Delete)}
+                                on:click={() => openDeleteModal(product)}
                             >
                                 <TrashBinSolid size="sm" /> Delete item
                             </Button>
@@ -184,5 +189,5 @@
 </main>
 
 <Drawer placement="right" transitionType="fly" {transitionParams} bind:hidden>
-    <svelte:component this={drawerComponent} bind:hidden />
+    <svelte:component this={drawerComponent} bind:hidden selectedProduct={selectedProduct} />
 </Drawer>
